@@ -30,7 +30,7 @@ public class AnalyticsService {
 
     public double[] calculateBMISeries(Person person) {
         int[] weights = person.getWeights();
-        double heightInMeters = person.getHeight() /100;
+        double heightInMeters = person.getHeight();
         double[] BMIs = new double[weights.length];
 
         for (int i= 0; i < weights.length; i++) {
@@ -42,10 +42,28 @@ public class AnalyticsService {
     }
 
     public WeightCondition determineWeightCondition(Person person) {
-        return null;
+        double[] bmiSeries = calculateBMISeries(person);
+        int numYears = bmiSeries.length;
+
+        if (numYears < 3) {
+            return WeightCondition.UNKNOWN;
+        }
+        for (int i = 0; i<3; i++) {
+            if (bmiSeries[i] <= 25) {
+                return WeightCondition.HEALTHY;
+            }
+        }
+        return WeightCondition.OVERWEIGHT;
     }
 
     public double calculateORR(Person[] persons) {
-        return 0;
+        int atRiskCount = 0;
+        for (Person person: persons) {
+            WeightCondition weightCondition = determineWeightCondition(person);
+            if (weightCondition == WeightCondition.OVERWEIGHT) {
+                atRiskCount++;
+            }
+        }
+        return (double) atRiskCount / persons.length;
     }
 }
