@@ -29,7 +29,16 @@ public class AnalyticsService {
     }
 
     public double[] calculateBMISeries(Person person) {
-        return new double[0];
+        int[] weights = person.getWeights();
+        double heightInMeters = person.getHeight() /100;
+        double[] BMIs = new double[weights.length];
+
+        for (int i= 0; i < weights.length; i++) {
+            double weightInKg = weights[i];
+            double BMI = weightInKg / (heightInMeters*heightInMeters);
+            BMIs[i] = BMI;
+        }
+        return BMIs;
     }
 
     public WeightCondition determineWeightCondition(Person person) {
